@@ -23,7 +23,7 @@ if __name__ == "__main__":
     #logger.info(conf_out.toDebugString())
 
     customer_survey_df = load_customer_df(spark, sys.argv[1])
-    partitioned_survey_df = customer_survey_df.repartitioned(2)
+    partitioned_survey_df = customer_survey_df.repartition(2)
     group_df = count_by_country(customer_survey_df)
 
     group_df.show()
