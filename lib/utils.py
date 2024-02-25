@@ -19,7 +19,6 @@ def load_customer_df(spark, data_file):
 
 def count_by_country(customer_survey_df):
      return customer_survey_df \
-        .where("Company == 'May Inc'") \
         .select("Company", "Last Name", "Country") \
         .groupBy("Country") \
         .count()
