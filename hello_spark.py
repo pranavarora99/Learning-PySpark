@@ -28,5 +28,6 @@ if __name__ == "__main__":
 
     group_df.show()
 
+    input("Press Enter")
     logger.info("Ending HelloSpark")
     spark.stop()
