@@ -10,6 +10,7 @@ if __name__ == '__main__':
 
     logger = Log4J(spark)
 
+    #defining schema with struck(programmatically)
     flight_schema_def = StructType([
         StructField("FL_DATE", DateType()),
         StructField("OP_CARRIER", StringType()),
@@ -28,6 +29,11 @@ if __name__ == '__main__':
         StructField("DISTANCE", IntegerType())
     ])
 
+    #defining schema with DDL
+    flightSchemaDDL = """FL_DATE DATE, OP_CARRIER STRING, OP_CARRIER_FL_NUM INT, ORIGIN STRING, 
+          ORIGIN_CITY_NAME STRING, DEST STRING, DEST_CITY_NAME STRING, CRS_DEP_TIME INT, DEP_TIME INT, 
+          WHEELS_ON INT, TAXI_IN INT, CRS_ARR_TIME INT, ARR_TIME INT, CANCELLED INT, DISTANCE INT"""
+
     #-------------reading from CSV-----------------------------------
     flight_csv_df = spark.read \
         .format("csv") \
@@ -43,6 +49,8 @@ if __name__ == '__main__':
     # -------------reading from JSON-----------------------------------
     # flight_json_df = spark.read \
     #     .format("json") \
+    #     .schema(flightSchemaDDL) \
+    #     .option("dateFormat", "M/d/y") \
     #     .load("data/flight*.json")
     #
     # flight_json_df.show(10)
