@@ -41,3 +41,18 @@ if __name__ == "__main__":
              )
 
     summary_df.show()
+
+NumInvoices = f.countDistinct("InvoiceNo").alias("NumInvoices")
+    TotalQuantity = f.sum("Quantity").alias("TotalQuantity")
+    InvoiceValue = f.round(f.sum(f.expr("Quantity * UnitPrice")),2).alias("InvoiceValue")
+
+    final_summary_df = invoice_df.withColumn("InvoiceDate", f.to_date(f.col("InvoiceDate"), 'MM-dd-yyyy')) \
+                    .withColumn("WeekNumber", f.weekofyear(f.col("InvoiceDate"))) \
+                    .groupBy("Country", "WeekNumber") \
+                    .agg(NumInvoices, TotalQuantity, InvoiceValue)
+
+    final_summary_df.write \
+        .format("csv") \
+        .mode("overwrite") \
+        .option("path", "output/") \
+        .save()
