@@ -1,4 +1,4 @@
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, Window
 from lib.logger import Log4J
 from pyspark.sql import functions as f
 
@@ -55,4 +55,15 @@ NumInvoices = f.countDistinct("InvoiceNo").alias("NumInvoices")
         .format("csv") \
         .mode("overwrite") \
         .option("path", "output/") \
+
+
+    ####### WINDOW aggregation example
+    window_df = spark.read.parquet("Data/summary.parquet")
+
+    running_window = Window.partitionBy("Country") \
+        .orderBy("WeekNumber") \
+        .rowsBetween(-5, Window.currentRow)
+
+    window_df = window_df.withColumn("RunningTotal", f.sum("InvoiceValue").over(running_window)) \
+        .show()
         .save()
